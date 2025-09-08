@@ -106,10 +106,10 @@ useHead(() => ({
   ]
 }))
 
-const query = ref('')
-const protoFilter = ref<'all' | 'https' | 'http'>('all')
+const base = import.meta.env.BASE_URL || '/'
+const jsonPath = base + 'whois.json'
 
-const { data, refresh, pending, error } = useFetch<WhoisScanFile>('/api/whois-scan', {
+const { data, refresh, pending, error } = useFetch<WhoisScanFile>(jsonPath, {
   server: false,
   immediate: true,
   default: () => ({ scannedAt: '', domains: [] })
@@ -139,7 +139,7 @@ function statusText(s?: number) {
 
 const cfg = useRuntimeConfig()
 const gitSha = computed(() => cfg.public.gitSha || 'unknown')
-const author = computed(() => cfg.public.authorName || 'Unknown')
+const author = computed(() => cfg.public.authorName || 'Sprudel')
 
 let interval: any
 onMounted(() => {
