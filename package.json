@@ -15,7 +15,6 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@types/node": "^24.3.1",
-    "nuxt-cron": "^1.8.0"
+    "@types/node": "^24.3.1"
   }
 }
