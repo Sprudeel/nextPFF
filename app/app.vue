@@ -140,6 +140,7 @@ function statusText(s?: number) {
 const cfg = useRuntimeConfig()
 const gitSha = computed(() => cfg.public.gitSha || 'unknown')
 const author = computed(() => cfg.public.authorName || 'Sprudel')
+const repoUrl = computed(() => cfg.public.repoUrl || `https://github.com/${process.env.GITHUB_REPOSITORY || ''}`)
 
 let interval: any
 onMounted(() => {
@@ -223,7 +224,17 @@ onUnmounted(() => clearInterval(interval))
           <span>{{ t.repo }}: NextPFF</span>
         </a>
         <span>•</span>
-        <span>Build: <code>{{ gitSha }}</code></span>
+        <span>
+          Build:
+          <a
+              class="link"
+              :href="'https://github.com/Sprudeel/nextPFF/commit/' + gitSha"
+              target="_blank"
+              rel="noopener noreferrer"
+          >
+            <code>{{ gitSha.slice(0, 8) }}</code>
+          </a>
+        </span>
       </div>
       <div class="footer__right">
         <span>{{ t.footerBy }} {{ author }}</span>
