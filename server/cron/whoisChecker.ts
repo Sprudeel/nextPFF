@@ -2,6 +2,7 @@ import { defineCronHandler } from "#nuxt/cron";
 import { useRuntimeConfig } from '#imports'
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
+import { useStorage } from'#imports'
 
 type WhoIsRecord = {
     domain: string
@@ -21,8 +22,6 @@ type WhoIsFile = {
     scannedAt: string
     domains: WhoIsRecord[]
 }
-
-const OUTPUT = 'public/whois.json'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -126,9 +125,8 @@ async function writeJSONPretty(absPath: string, data: unknown) {
 }
 
 export default defineCronHandler("daily", async () => {
+    const storage = useStorage('data')
     const cfg = useRuntimeConfig();
-    const outPathRel = (cfg as any).whois?.outputFile || OUTPUT;
-    const outPath = resolve(process.cwd(), outPathRel);
 
     const domains = await loadDomains();
     const results: WhoIsRecord[] = [];
@@ -156,5 +154,5 @@ export default defineCronHandler("daily", async () => {
         domains: results
     }
 
-    await writeJSONPretty(outPath, payload);
+    await storage.setItem('whois-scan.json', payload)
 });
