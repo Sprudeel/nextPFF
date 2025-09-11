@@ -70,7 +70,7 @@ async function checkWebsite(domain) {
 
 
     const response = await client.responses.create({
-        model: "gpt-5",
+        model: "gpt-5-nano",
         input: "only answer with Yes or No. Does the following HTML content indicate that the website is from a hosting company and not for the PFF (a scout organized festival) Popular Hosting Companies include: Hostpoint, Hoststar and many more? " + html,
     });
     const answer = response.output_text;
@@ -85,11 +85,11 @@ async function checkWebsite(domain) {
 
 
     if(answer === 'Yes') {
-        return false;
+        return { present: false };
     } else if (answer === 'No' && usesHttps) {
-        return true;
+        return { present: true };
     } else {
-        return false;
+        return { present: false };
     }
 }
 
@@ -101,7 +101,6 @@ async function main() {
         const tld = domain.split(".").slice(-1)[0]?.toLowerCase() || "";
         const checkedAt = new Date().toISOString();
         const registered = await isRegistered(domain);
-        console.log(registered);
         let website = { present: false };
         if (registered) website = await checkWebsite(domain);
         results.push({ domain, tld, registered, website, checkedAt });
