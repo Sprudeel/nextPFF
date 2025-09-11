@@ -26,6 +26,7 @@ jobs:
       GIT_COMMIT_SHA: ${{ github.sha }}
       REPO_URL: https://github.com/${{ github.repository }}
       AUTHOR_NAME: ${{ vars.AUTHOR_NAME || 'Sprudel' }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || '' }}
 
       # scanner config
       DOMAINS_FILE: domains.txt

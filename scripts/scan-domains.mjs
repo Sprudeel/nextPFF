@@ -1,6 +1,11 @@
 import { readFile, writeFile, mkdir, access } from "fs/promises";
 import { constants as fsConstants } from "fs";
 import { resolve, dirname } from "path";
+import 'dotenv/config';
+import OpenAI from "openai";
+const client = new OpenAI();
+
+
 
 const DOMAINS_TXT = process.env.DOMAINS_FILE || "domains.txt";
 const OUTPUT = process.env.OUTPUT_FILE || "public/whois.json";
@@ -59,34 +64,33 @@ async function isRegistered(domain) {
 }
 
 async function checkWebsite(domain) {
-    const tryOnce = async (proto) => {
-        const url = `${proto}://${domain}/`;
-        try {
-            let res = await fetchWithTimeout(url, { method: "HEAD", timeoutMs: 6000 });
-            if (res.status === 405 || res.status === 403) {
-                res = await fetchWithTimeout(url, { method: "GET", timeoutMs: 8000 });
-            }
-            const ok = res.status >= 200 && res.status < 400;
-            return {
-                present: ok,
-                protocol: proto,
-                status: res.status,
-                urlTried: url,
-            };
-        } catch (e) {
-            return {
-                present: false,
-                error: String(e?.message || e),
-                urlTried: url,
-            };
-        }
-    };
+    const html = await fetch(`http://${domain}/`, { method: "GET", redirect: "manual" })
+        .then((r) => r.text())
+        .catch(() => null);
 
-    const https = await tryOnce("https");
-    if (https.present) return https;
-    const http = await tryOnce("http");
-    if (http.present) return http;
-    return https.status ? https : http;
+
+    const response = await client.responses.create({
+        model: "gpt-5",
+        input: "only answer with Yes or No. Does the following HTML content indicate that the website is from a hosting company and not for the PFF (a scout organized festival) Popular Hosting Companies include: Hostpoint, Hoststar and many more? " + html,
+    });
+    const answer = response.output_text;
+
+    let usesHttps = false;
+    try {
+        const httpsRes = await fetch(`https://${domain}/`, { method: "HEAD", redirect: "manual" });
+        usesHttps = httpsRes.ok || httpsRes.status === 301 || httpsRes.status === 302;
+    } catch {
+        usesHttps = false;
+    }
+
+
+    if(answer === 'Yes') {
+        return false;
+    } else if (answer === 'No' && usesHttps) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 async function main() {
@@ -97,6 +101,7 @@ async function main() {
         const tld = domain.split(".").slice(-1)[0]?.toLowerCase() || "";
         const checkedAt = new Date().toISOString();
         const registered = await isRegistered(domain);
+        console.log(registered);
         let website = { present: false };
         if (registered) website = await checkWebsite(domain);
         results.push({ domain, tld, registered, website, checkedAt });
