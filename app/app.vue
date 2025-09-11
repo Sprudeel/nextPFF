@@ -179,7 +179,7 @@ onUnmounted(() => clearInterval(interval))
     <section class="grid">
       <article v-for="d in domains" :key="d.domain" class="card">
         <header class="card__header">
-          <h2 v-if="d.website.present" class="card__title"> <a class="link" :href="d.website.urlTried">{{ d.domain }}</a> </h2>
+          <h2 v-if="d.website.present" class="card__title"> <a class="link" :href="d.website.url">{{ d.domain }}</a> </h2>
           <h2 v-else class="card__title"> {{ d.domain }} </h2>
           <div class="chips">
             <span :class="['badge', d.registered ? 'badge--ok' : 'badge--no']">
