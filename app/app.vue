@@ -106,7 +106,7 @@ useHead(() => ({
   ]
 }))
 
-const base = import.meta.env.BASE_URL || '/'
+const base = '/'
 const jsonPath = base + 'whois.json'
 
 const { data, refresh, pending, error } = useFetch<WhoisScanFile>(jsonPath, {
@@ -192,14 +192,6 @@ onUnmounted(() => clearInterval(interval))
         </header>
 
         <div class="card__meta">
-          <div class="meta__row">
-            <span class="meta__label">{{ t.protocol + ": " }} </span>
-            <span class="meta__value">{{ protoChip(d.website?.protocol) }}</span>
-          </div>
-          <div class="meta__row">
-            <span class="meta__label">{{ t.status + ": " }}</span>
-            <span class="meta__value">{{ statusText(d.website?.status) }}</span>
-          </div>
           <div class="meta__row">
             <span class="meta__label">{{ t.lastChecked + ": " }}</span>
             <span class="meta__value">
