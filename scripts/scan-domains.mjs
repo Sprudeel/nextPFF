@@ -87,7 +87,7 @@ async function checkWebsite(domain) {
     if(answer === 'Yes') {
         return { present: false };
     } else if (answer === 'No' && usesHttps) {
-        return { present: true };
+        return { present: true, url: `https://${domain}` };
     } else {
         return { present: false };
     }
