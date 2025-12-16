@@ -12,9 +12,9 @@ concurrency:
   group: github-pages-${{ github.ref }}
   cancel-in-progress: true
 
-# Required for Pages deployment
+# Required for Pages deployment + committing history
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -25,12 +25,13 @@ jobs:
       # metadata for footer
       GIT_COMMIT_SHA: ${{ github.sha }}
       REPO_URL: https://github.com/${{ github.repository }}
-      AUTHOR_NAME: ${{ vars.AUTHOR_NAME || 'Sprudel' }}
+      AUTHOR_NAME: 'Sprudeel'
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || '' }}
 
       # scanner config
       DOMAINS_FILE: domains.txt
       OUTPUT_FILE: public/whois.json
+      HISTORY_FILE: public/history.json
 
     steps:
       - name: Checkout
@@ -50,11 +51,20 @@ jobs:
       - name: Run scanner
         run: node scripts/scan-domains.mjs
 
-      # 2) Build a static site into .output/public
+      # 2) Commit history.json changes back to repo
+      - name: Commit history changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/history.json
+          git diff --staged --quiet || git commit -m "chore: update history.json [skip ci]"
+          git push || echo "Nothing to push"
+
+      # 3) Build a static site into .output/public
       - name: Generate static site
         run: npm run generate
 
-      # 3) Upload Pages artifact
+      # 4) Upload Pages artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

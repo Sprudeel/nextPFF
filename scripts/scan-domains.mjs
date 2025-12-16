@@ -9,6 +9,7 @@ const client = new OpenAI();
 
 const DOMAINS_TXT = process.env.DOMAINS_FILE || "domains.txt";
 const OUTPUT = process.env.OUTPUT_FILE || "public/whois.json";
+const HISTORY_FILE = process.env.HISTORY_FILE || "public/history.json";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -83,8 +84,10 @@ async function checkWebsite(domain) {
         usesHttps = false;
     }
 
+    console.log(`[check] ${domain} -> ${answer} (https: ${usesHttps})`);
 
-    if(answer === 'Yes') {
+
+    if (answer === 'Yes') {
         return { present: false };
     } else if (answer === 'No' && usesHttps) {
         return { present: true, url: `https://${domain}` };
@@ -98,12 +101,11 @@ async function main() {
     const results = [];
 
     for (const domain of domains) {
-        const tld = domain.split(".").slice(-1)[0]?.toLowerCase() || "";
         const checkedAt = new Date().toISOString();
         const registered = await isRegistered(domain);
         let website = { present: false };
         if (registered) website = await checkWebsite(domain);
-        results.push({ domain, tld, registered, website, checkedAt });
+        results.push({ domain, registered, website, checkedAt });
         await sleep(150); // throttle requests to be polite
     }
 
@@ -113,6 +115,65 @@ async function main() {
     await mkdir(dirname(outAbs), { recursive: true });
     await writeFile(outAbs, JSON.stringify(payload, null, 2), "utf8");
     console.log(`[scan] wrote ${results.length} entries → ${OUTPUT}`);
+
+    // Update history.json with status change events
+    const historyAbs = resolve(process.cwd(), HISTORY_FILE);
+    let history = { events: [], lastState: {} };
+    if (await fileExists(historyAbs)) {
+        try {
+            const raw = await readFile(historyAbs, "utf8");
+            history = JSON.parse(raw);
+            if (!Array.isArray(history.events)) history.events = [];
+            if (!history.lastState || typeof history.lastState !== 'object') history.lastState = {};
+        } catch {
+            history = { events: [], lastState: {} };
+        }
+    }
+
+    // Status Hierarchy:
+    // 1. available (Not registered)
+    // 2. registered (Registered, no website)
+    // 3. website (Registered + Website)
+
+    const now = new Date().toISOString();
+    let newEvents = 0;
+
+    for (const entry of results) {
+        const domain = entry.domain;
+
+        // Determine current status
+        let currentStatus = 'available';
+        if (entry.registered) {
+            currentStatus = entry.website.present ? 'website' : 'registered';
+        }
+
+        const prevStatus = history.lastState[domain]?.status;
+
+        // Record event if status changed or if it's the first time seeing this domain
+        if (currentStatus !== prevStatus) {
+            history.events.push({
+                date: now,
+                domain,
+                status: currentStatus,
+                previousStatus: prevStatus || null
+            });
+            newEvents++;
+        }
+
+        // Update last state
+        history.lastState[domain] = { status: currentStatus };
+    }
+
+    // Keep only last 365 days of events
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 365);
+    history.events = history.events.filter((event) => {
+        const eventDate = new Date(event.date);
+        return eventDate >= cutoff;
+    });
+
+    await writeFile(historyAbs, JSON.stringify(history, null, 2), "utf8");
+    console.log(`[scan] updated history → ${HISTORY_FILE} (${newEvents} new events, ${history.events.length} total)`);
 }
 
 main().catch((e) => {

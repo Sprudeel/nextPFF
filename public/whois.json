@@ -1,0 +1,87 @@
+{
+  "scannedAt": "2025-12-16T15:27:10.794Z",
+  "domains": [
+    {
+      "domain": "pff26.ch",
+      "registered": true,
+      "website": {
+        "present": true,
+        "url": "https://pff26.ch"
+      },
+      "checkedAt": "2025-12-16T15:26:37.172Z"
+    },
+    {
+      "domain": "pff27.ch",
+      "registered": true,
+      "website": {
+        "present": true,
+        "url": "https://pff27.ch"
+      },
+      "checkedAt": "2025-12-16T15:26:45.622Z"
+    },
+    {
+      "domain": "pff28.ch",
+      "registered": false,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:26:51.333Z"
+    },
+    {
+      "domain": "pff29.ch",
+      "registered": true,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:26:51.600Z"
+    },
+    {
+      "domain": "pff30.ch",
+      "registered": true,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:27:00.902Z"
+    },
+    {
+      "domain": "pff31.ch",
+      "registered": true,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:27:03.659Z"
+    },
+    {
+      "domain": "pff32.ch",
+      "registered": false,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:27:09.878Z"
+    },
+    {
+      "domain": "pff33.ch",
+      "registered": false,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:27:10.093Z"
+    },
+    {
+      "domain": "pff34.ch",
+      "registered": false,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:27:10.323Z"
+    },
+    {
+      "domain": "pff35.ch",
+      "registered": false,
+      "website": {
+        "present": false
+      },
+      "checkedAt": "2025-12-16T15:27:10.571Z"
+    }
+  ]
+}
