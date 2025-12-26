@@ -59,26 +59,56 @@
       "domain": "pff35.ch",
       "status": "available",
       "previousStatus": null
+    },
+    {
+      "date": "2025-12-26T03:31:34.124Z",
+      "domain": "pff26.ch",
+      "status": "available",
+      "previousStatus": "website"
+    },
+    {
+      "date": "2025-12-26T03:31:34.124Z",
+      "domain": "pff27.ch",
+      "status": "available",
+      "previousStatus": "website"
+    },
+    {
+      "date": "2025-12-26T03:31:34.124Z",
+      "domain": "pff29.ch",
+      "status": "available",
+      "previousStatus": "registered"
+    },
+    {
+      "date": "2025-12-26T03:31:34.124Z",
+      "domain": "pff30.ch",
+      "status": "available",
+      "previousStatus": "registered"
+    },
+    {
+      "date": "2025-12-26T03:31:34.124Z",
+      "domain": "pff31.ch",
+      "status": "available",
+      "previousStatus": "registered"
     }
   ],
   "lastState": {
     "pff26.ch": {
-      "status": "website"
+      "status": "available"
     },
     "pff27.ch": {
-      "status": "website"
+      "status": "available"
     },
     "pff28.ch": {
       "status": "available"
     },
     "pff29.ch": {
-      "status": "registered"
+      "status": "available"
     },
     "pff30.ch": {
-      "status": "registered"
+      "status": "available"
     },
     "pff31.ch": {
-      "status": "registered"
+      "status": "available"
     },
     "pff32.ch": {
       "status": "available"
