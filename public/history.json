@@ -389,6 +389,12 @@
       "domain": "pff27.ch",
       "status": "website",
       "previousStatus": "registered"
+    },
+    {
+      "date": "2026-07-09T04:25:23.783Z",
+      "domain": "pff27.ch",
+      "status": "registered",
+      "previousStatus": "website"
     }
   ],
   "lastState": {
@@ -396,7 +402,7 @@
       "status": "website"
     },
     "pff27.ch": {
-      "status": "website"
+      "status": "registered"
     },
     "pff28.ch": {
       "status": "available"
