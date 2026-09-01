@@ -491,11 +491,17 @@
       "domain": "pff32.ch",
       "status": "registered",
       "previousStatus": "available"
+    },
+    {
+      "date": "2026-09-01T03:10:46.611Z",
+      "domain": "pff26.ch",
+      "status": "website",
+      "previousStatus": "registered"
     }
   ],
   "lastState": {
     "pff26.ch": {
-      "status": "registered"
+      "status": "website"
     },
     "pff27.ch": {
       "status": "website"
